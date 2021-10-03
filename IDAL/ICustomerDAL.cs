@@ -13,5 +13,6 @@ namespace IDAL
         List<Customer> GetCSVData(int Page, int PageSize);
         int GetCSVDataTotalCount();
         DataSet GetCSVDataExport();
+        int ImportDataTableToDB(DataTable dt);
     }
 }

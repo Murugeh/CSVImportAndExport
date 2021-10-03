@@ -117,6 +117,14 @@
             if (success == true) {
                 alert('File Successfully Uploaded!');
             }
+            else
+            {
+                var fail = @((TempData["Failure"] != null).ToString().ToLower());
+                if (fail == true) {
+                    alert('Error While Uploading a File');
+                }
+            }
+
             var Exportsuccess = @((TempData["ExportFail"] != null).ToString().ToLower());
             if (Exportsuccess == true) {
                 alert('No Records to Export Data');
@@ -132,7 +140,7 @@
             /(\.csv)$/i;
 
         if (!allowedExtensions.exec(filePath)) {
-            alert('Invalid file Please select .csv type');
+            alert('Invalid file. Please Select .csv Type');
             fileInput.value = '';
             return false;
         }

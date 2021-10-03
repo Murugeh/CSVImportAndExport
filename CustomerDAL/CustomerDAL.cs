@@ -95,5 +95,32 @@ namespace DAL
             }
             return ds;
         }
+        public int ImportDataTableToDB(DataTable dt)
+        {
+            try
+            {
+                string conString = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
+                using (SqlConnection con = new SqlConnection(conString))
+                {
+                    using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(con))
+                    {
+                        sqlBulkCopy.DestinationTableName = "dbo.Customers";
+                        sqlBulkCopy.ColumnMappings.Add("CustomerName", "CustomerName");
+                        sqlBulkCopy.ColumnMappings.Add("City", "City");
+                        sqlBulkCopy.ColumnMappings.Add("State", "State");
+                        sqlBulkCopy.ColumnMappings.Add("Country", "Country");
+                        con.Open();
+                        sqlBulkCopy.WriteToServer(dt);
+                        con.Close();
+                    }
+                }
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+                throw ex;
+            }
+        }
     }
 }

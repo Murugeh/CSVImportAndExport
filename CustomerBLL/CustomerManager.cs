@@ -26,5 +26,9 @@ namespace CustomerBLL
         {
             return objDAL.GetCSVDataExport();
         }
+        public int ImportDataTableToDB(DataTable dt)
+        {
+            return objDAL.ImportDataTableToDB(dt);
+        }
     }
 }

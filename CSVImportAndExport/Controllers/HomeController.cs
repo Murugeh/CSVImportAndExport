@@ -37,6 +37,7 @@ namespace CSVImportAndExport.Controllers
             catch (Exception ex)
             {
                 return RedirectToAction("ErrorPage");
+                //Log Exceptions
             }
 
         }
@@ -57,6 +58,7 @@ namespace CSVImportAndExport.Controllers
                     string extension = Path.GetExtension(postedFile.FileName);
                     postedFile.SaveAs(filePath);
                     DataTable dt = new DataTable();
+                    CustomerManager objManager = new CustomerManager();
                     dt.Columns.AddRange(new DataColumn[4] { new DataColumn("CustomerName", typeof(string)),
                                 new DataColumn("City", typeof(string)),
                                 new DataColumn("State",typeof(string)),
@@ -77,26 +79,19 @@ namespace CSVImportAndExport.Controllers
                             }
                         }
                     }
-                    string conString = ConfigurationManager.ConnectionStrings["DBConnectionString"].ConnectionString;
-                    using (SqlConnection con = new SqlConnection(conString))
+                    int retvalue = objManager.ImportDataTableToDB(dt);
+                    if(retvalue==1)
                     {
-                        using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(con))
-                        {
-                            sqlBulkCopy.DestinationTableName = "dbo.Customers";
-                            sqlBulkCopy.ColumnMappings.Add("CustomerName", "CustomerName");
-                            sqlBulkCopy.ColumnMappings.Add("City", "City");
-                            sqlBulkCopy.ColumnMappings.Add("State", "State");
-                            sqlBulkCopy.ColumnMappings.Add("Country", "Country");
-                            con.Open();
-                            sqlBulkCopy.WriteToServer(dt);
-                            con.Close();
-                            TempData["FileUploadSuccess"] = "SuccessMsg";
-                        }
+                        TempData["FileUploadSuccess"] = "SuccessMsg";
+                    }
+                    else
+                    {
+                        TempData["Failure"] = "Failure";
                     }
                 }
                 catch (Exception ex)
                 {
-                    TempData["Failure"] = "Failure";
+                    return RedirectToAction("ErrorPage");
                     //Log Exceptions
                 }
 
@@ -154,13 +149,14 @@ namespace CSVImportAndExport.Controllers
             }
             catch (Exception ex)
             {
+                return RedirectToAction("ErrorPage");
                 //Log Exceptions
             }
             return RedirectToAction("Index");
         }
         public ActionResult ErrorPage()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "Error page.";
 
             return View();
         }
