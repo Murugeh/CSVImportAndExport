@@ -1,5 +1,4 @@
 ﻿using CustomerBLL;
-using CustomerModel;
 using Model;
 using System;
 using System.Collections.Generic;
